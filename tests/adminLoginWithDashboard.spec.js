@@ -1,11 +1,14 @@
 import { test, expect } from 'playwright-test-coverage';
 
-test('admin login, dashboard, add franchise', async ({ page }) => {
+test('admin login, dashboard, add franchise', async ({ page }) =>
+{
     const defaultAdmin = { name: '常用名字', email: 'a@jwt.com', password: 'admin' };
 
-    await page.route('*/**/api/auth', async (route) => {
+    await page.route('*/**/api/auth', async (route) =>
+    {
         const method = route.request().method();
-        if (method === 'PUT') {
+        if (method === 'PUT')
+        {
             const loginReq = { email: defaultAdmin.email, password: defaultAdmin.password };
             const loginRes = {
                 user: { id: 1, name: defaultAdmin.name, email: defaultAdmin.email, roles: [{ role: 'admin' }] },
@@ -13,19 +16,23 @@ test('admin login, dashboard, add franchise', async ({ page }) => {
             };
             expect(route.request().postDataJSON()).toMatchObject(loginReq);
             await route.fulfill({ json: loginRes });
-        } else if (method === 'DELETE') {
+        } else if (method === 'DELETE')
+        {
             const logoutRes = { message: 'logout successful' };
             await route.fulfill({ json: logoutRes });
         }
     });
-
+    let franchises = []
     // Handle both GET and POST requests for franchises
-    await page.route('*/**/api/franchise', async (route) => {
+    await page.route('*/**/api/franchise', async (route) =>
+    {
         const method = route.request().method();
-        if (method === 'GET') {
-            const franchisesRes = []; // Return an empty array or any existing franchises
+        if (method === 'GET')
+        {
+            const franchisesRes = franchises; // Return an empty array or any existing franchises
             await route.fulfill({ json: franchisesRes });
-        } else if (method === 'POST') {
+        } else if (method === 'POST')
+        {
             const createFranchiseReq = { name: 'pizzaPocket', admins: [{ email: 'f@jwt.com' }] };
             expect(route.request().postDataJSON()).toMatchObject(createFranchiseReq);
             await route.fulfill({
@@ -38,15 +45,18 @@ test('admin login, dashboard, add franchise', async ({ page }) => {
         }
     });
 
-    await page.route('*/**/api/franchise/1/store', async (route) => {
+    await page.route('*/**/api/franchise/1/store', async (route) =>
+    {
         const createStoreReq = { franchiseId: 1, name: 'test store' };
         expect(route.request().method()).toBe('POST');
         expect(route.request().postDataJSON()).toMatchObject(createStoreReq);
         await route.fulfill({ json: { id: 1, franchiseId: 1, name: 'test store' } });
     });
 
-    await page.route('*/**/api/franchise/1/store/1', async (route) => {
-        if (route.request().method() === 'DELETE') {
+    await page.route('*/**/api/franchise/1/store/1', async (route) =>
+    {
+        if (route.request().method() === 'DELETE')
+        {
             await route.fulfill({ json: { message: 'store deleted' } });
         }
     });
