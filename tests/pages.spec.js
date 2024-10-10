@@ -36,7 +36,7 @@ test('docs page', async ({ page }) => {
   await page.goto('/docs');
 
   expect(await page.title()).toBe('JWT Pizza');
-  expect(await page.getByText('API Documentation'));
+  await expect(page.getByRole('main')).toContainText('JWT Pizza API');
 
   const homeLink = page.getByRole('link', { name: 'home' });
   expect(await homeLink.textContent()).toBe('home');
@@ -47,7 +47,6 @@ test('history page', async ({ page }) => {
   await page.goto('/history');
 
   expect(await page.title()).toBe('JWT Pizza');
-  expect(await page.getByText('History'));
 
   const homeLink = page.getByRole('link', { name: 'home' });
   expect(await homeLink.textContent()).toBe('home');
@@ -58,7 +57,6 @@ test('franchise base page', async ({ page }) => {
   await page.goto('/franchise-dashboard');
 
   expect(await page.title()).toBe('JWT Pizza');
-  expect(await page.getByText('Franchise'));
 
   const homeLink = page.getByRole('link', { name: 'home' });
   expect(await homeLink.textContent()).toBe('home');
