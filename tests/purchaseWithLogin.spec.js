@@ -61,9 +61,8 @@ test('purchase with login', async ({ page }) => {
       expect(route.request().postDataJSON()).toMatchObject(orderReq);
       await route.fulfill({ json: orderRes });
     });
-  
     await page.goto('/');
-  
+    
     // Go to order page
     await page.getByRole('button', { name: 'Order now' }).click();
   
